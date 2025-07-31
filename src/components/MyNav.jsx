@@ -5,7 +5,7 @@ import Form from "react-bootstrap/Form";
 import { Button } from "react-bootstrap";
 
 import { useTheme } from "../context/contextTheme";
-import { NavLink } from "react-router";
+import { NavLink, useLocation } from "react-router";
 import { FaMoon, FaSun } from "react-icons/fa";
 
 function MyNav({
@@ -16,7 +16,9 @@ function MyNav({
   booksData,
 }) {
   const { theme, toggleTheme, colorText, darkMode } = useTheme();
-  console.log(theme);
+  const location = useLocation();
+  const isDetailsPage = location.pathname.startsWith("/books/");
+  const isAboutPage = location.pathname.startsWith("/About");
   return (
     <>
       <Navbar bg={theme} data-bs-theme={theme}>
@@ -26,7 +28,11 @@ function MyNav({
           style={{ width: "35px", height: "35px", padding: 0 }}
           onClick={toggleTheme}
         >
-          {darkMode ? <FaSun className="text-warning" /> : <FaMoon className="text-white"/>}
+          {darkMode ? (
+            <FaSun className="text-warning" />
+          ) : (
+            <FaMoon className="text-white" />
+          )}
         </Button>
         <Container fluid className="d-flex flex-wrap flex-sm-nowrap">
           <Navbar.Brand style={{ color: colorText }} as={NavLink} to="/">
@@ -43,30 +49,32 @@ function MyNav({
               Browse
             </Nav.Link>
           </Nav>
-          <div className="d-flex align-items-center gap-2">
-            <select
-              className="form-select "
-              value={categoria}
-              onChange={handleCategoria}
-            >
-              {Object.keys(booksData).map((cat) => {
-                console.log(cat);
-                return <option key={cat}>{cat}</option>;
-              })}
-            </select>
+          {!(isDetailsPage || isAboutPage) && (
+            <div className="d-flex align-items-center gap-2">
+              <select
+                className="form-select "
+                value={categoria}
+                onChange={handleCategoria}
+              >
+                {Object.keys(booksData).map((cat) => {
+                  console.log(cat);
+                  return <option key={cat}>{cat}</option>;
+                })}
+              </select>
 
-            {/* <Form>
+              {/* <Form>
       <Form.Group className="mb-3" >
         <Form.Label>Ricerca</Form.Label> */}
-            <Form.Control
-              type="text"
-              placeholder="Ricerca il libro "
-              onChange={handleSearch}
-              value={searchValue}
-            />
-            {/* </Form.Group>
+              <Form.Control
+                type="text"
+                placeholder="Ricerca il libro "
+                onChange={handleSearch}
+                value={searchValue}
+              />
+              {/* </Form.Group>
     </Form> */}
-          </div>
+            </div>
+          )}
         </Container>
       </Navbar>
     </>
